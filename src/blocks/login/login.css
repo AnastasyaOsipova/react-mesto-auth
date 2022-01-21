@@ -1,0 +1,11 @@
+.login{
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    width: 80%;
+    max-width: 880px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 60px;
+
+}

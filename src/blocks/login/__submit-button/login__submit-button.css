@@ -1,0 +1,27 @@
+.login__submit-button{
+    width: 358px;
+    height: 50px;
+    background: #FFFFFF;
+    border-radius: 2px;
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 400;
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    border: none;
+    margin-top: 216px;
+}
+
+.login__submit-button:hover{
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 500px){
+    .login__submit-button{
+        width: 238px;
+        height: 46px;
+        font-size: 14px;    
+        margin-top: 173px; 
+    }
+   
+}
