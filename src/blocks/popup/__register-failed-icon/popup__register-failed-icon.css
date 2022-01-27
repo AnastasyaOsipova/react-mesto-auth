@@ -1,0 +1,5 @@
+.popup__register-failed-icon{
+    background-image: url("../../../images/register-popup-no-icon.svg");
+    width: 120px;
+    height: 120px;
+}

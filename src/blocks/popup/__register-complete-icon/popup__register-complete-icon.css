@@ -1,0 +1,6 @@
+.popup__register-complete-icon{
+    background-image: url("../../../images/register-popup-yes-icon.svg");
+    width: 120px;
+    height: 120px;
+    align-self: center;
+}

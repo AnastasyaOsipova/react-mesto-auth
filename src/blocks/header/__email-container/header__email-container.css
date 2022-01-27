@@ -1,0 +1,15 @@
+.header__email-container{
+    display: flex;
+    flex-direction: row;
+    max-width: 220px;
+}
+
+@media screen and (max-width: 550px){
+    .header__email-container{
+        flex-direction: column;
+        padding-top: 40px;
+    
+        
+    }
+    
+}

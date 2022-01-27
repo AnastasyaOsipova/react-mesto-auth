@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -12,8 +12,12 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import Login from "./Login";
 import Register from "./Register";
+import ProtectedRoute from "./ProtectedRoute";
+import InfoTooltip from "./InfoTooltip";
+import * as auth from "./auth";
 
-function App() {
+
+function App(props) {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
     React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
@@ -27,16 +31,28 @@ function App() {
 
   const [currentUser, setCurrentUser] = React.useState({});
 
+  const [userEmail, setUserEmail] = React.useState("");
+
+  const [loggedIn, setLoggedIn] = React.useState(false);
+
+  const [InfoTooltipStatus, setInfoTooltipStatus] = React.useState(true);
+
+  const [isInfoTooltipOpen, setisInfoTooltipOpen] = React.useState(false);
+
   React.useEffect(() => {
     Promise.all([api.getUserInfoApi(), api.getInitialCards()])
       .then(([userData, cardData]) => {
+        handleTokenCheck()
         setCurrentUser(userData);
         setCards(cardData);
+               
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
+
+  
 
   const [cards, setCards] = React.useState([]);
 
@@ -64,6 +80,25 @@ function App() {
       });
   }
 
+  function handleLogin() {
+    setLoggedIn(true);
+  }
+
+  function handleTokenCheck () {
+    if (localStorage.getItem("token")) {
+      const token = localStorage.getItem("token");
+      
+      auth.checkToken(token).then((res) => {
+        if (res) {
+          setLoggedIn(true);
+          setUserEmail(res.data.email);
+          props.history.push('/');
+          }
+      });
+    }
+  };
+
+
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
   }
@@ -76,12 +111,22 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
+  function changeInfoTooltipstatus(){
+    setInfoTooltipStatus(false);
+  }
+
+  function openInfoTooltip(){
+    setisInfoTooltipOpen(true);
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setSelectedCard({ name: "", link: "" });
-  }
+    setInfoTooltipStatus(true);
+    setisInfoTooltipOpen(false);
+    }
 
   React.useEffect(() => {
     function closePopupByEsc(e) {
@@ -172,24 +217,34 @@ function App() {
         </PopupWithForm>
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups}></ImagePopup>
-        <Header />
+
+        <InfoTooltip
+        isOpen={isInfoTooltipOpen}
+        status={InfoTooltipStatus}
+        onClose={closeAllPopups}
+      />
+        
+        <Header email={userEmail} loggedIn={loggedIn}/>
         <Switch>
-          <Route exact path="/">
-            <Main
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleEditPlaceClick}
-              onEditAvatar={handleEditAvatarClick}
-              handleClick={handleCardClick}
-              handleCardLike={handleCardLike}
-              handleCardDelete={handleCardDelete}
-              cards={cards}
-            />
+          <ProtectedRoute
+            loggedIn={loggedIn}
+            exact path="/"
+            component={Main}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleEditPlaceClick}
+            onEditAvatar={handleEditAvatarClick}
+            handleClick={handleCardClick}
+            handleCardLike={handleCardLike}
+            handleCardDelete={handleCardDelete}
+            cards={cards}
+          />
+          <Route path="/signup">
+            <Register changeInfoTooltipstatus={changeInfoTooltipstatus}
+          openInfoTooltip={openInfoTooltip}/>
           </Route>
-          <Route path="/sign-up">
-            <Register />
-          </Route>
-          <Route path="/sign-in">
-            <Login />
+         
+          <Route path="/signin">
+            <Login handleLogin={handleLogin} />
           </Route>
           <Footer />
         </Switch>
@@ -198,4 +253,4 @@ function App() {
   );
 }
 
-export default App;
+export default withRouter(App);

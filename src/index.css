@@ -51,3 +51,10 @@
 @import url(./blocks/login/__submit-button/login__submit-button.css);
 @import url(./blocks/login/__link/login__link.css);
 @import url(./blocks/link/link.css);
+@import url(./blocks/header/__link/header__link.css);
+@import url(./blocks/popup/__register-complete-icon/popup__register-complete-icon.css);
+@import url(./blocks/popup/__text/popup__text.css);
+@import url(./blocks/popup/__register-container/popup__register-container.css);
+@import url(./blocks/popup/__register-failed-icon/popup__register-failed-icon.css);
+@import url(./blocks/header/__email-container/header__email-container.css);
+@import url(./blocks/header/__sign-out-button/header__sign-out-button.css);
