@@ -45,8 +45,9 @@ function App(props) {
         setCards(cardData);
       })
       .catch((err) => {
-        console.log(err).then(handleTokenCheck);
+        console.log(err)
       });
+      handleTokenCheck()
   }, []);
 
   const [cards, setCards] = React.useState([]);
