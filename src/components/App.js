@@ -45,8 +45,6 @@ function App(props) {
         setCards(cardData);
       })
       .then(handleTokenCheck())
-      .then((res) => setUserEmail(res.data.email))
-
       .catch((err) => {
         console.log(err);
       });
@@ -80,6 +78,7 @@ function App(props) {
 
   function handleLogin() {
     setLoggedIn(true);
+    handleTokenCheck();
   }
 
   function handleTokenCheck() {
