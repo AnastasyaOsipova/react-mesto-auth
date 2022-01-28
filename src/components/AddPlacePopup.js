@@ -5,6 +5,11 @@ export default function AddPlacePopup(props) {
   const [name, setName] = React.useState("");
   const [link, setLink] = React.useState("");
 
+  React.useEffect(() => {
+    setName("");
+    setLink("");
+  }, [props.isOpen]);
+
   function handleNameChange(e) {
     setName(e.target.value);
   }
@@ -18,10 +23,8 @@ export default function AddPlacePopup(props) {
 
     props.onAddPlace({
       name,
-      link
+      link,
     });
-    setLink(" ");
-    setName(" ");
   }
 
   return (
@@ -37,7 +40,7 @@ export default function AddPlacePopup(props) {
           required
           type="text"
           name="name"
-          value={name}
+          value={name || ''}
           onChange={handleNameChange}
           placeholder="Название"
           id="place-input"
@@ -52,7 +55,7 @@ export default function AddPlacePopup(props) {
           required
           type="url"
           name="link"
-          value={link}
+          value={link || ''}
           onChange={handleLinkChange}
           placeholder="Ссылка на картинку"
           id="image-input"

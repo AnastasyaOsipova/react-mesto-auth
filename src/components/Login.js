@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
-import * as auth from "./auth";
+import * as auth from "../utils.js/auth";
 
 function Login(props) {
   const [values, setValues] = React.useState({
@@ -28,18 +28,14 @@ function Login(props) {
           setValues({
             username: "",
             password: "",
-          })
-
-          localStorage.setItem('token', res.token);
+          });
+          localStorage.setItem("token", res.token);
           props.handleLogin();
-          props.history.push('/')   
+          props.history.push("/");
         }
-      })  
-        
+      })
       .catch((err) => console.log(err));
-  };
-
-
+  }
 
   return (
     <div className="login">
@@ -55,7 +51,7 @@ function Login(props) {
           required
           type="email"
           name="email"
-          value={values.email}
+          value={values.email || ""}
           onChange={handleChange}
           placeholder="Email"
           id="email-input"
@@ -66,7 +62,7 @@ function Login(props) {
           required
           type="password"
           name="password"
-          value={values.password}
+          value={values.password || ""}
           onChange={handleChange}
           placeholder="Пароль"
           id="email-input"

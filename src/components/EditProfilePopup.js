@@ -11,7 +11,7 @@ export default function EditProfilePopup(props) {
   React.useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-  }, [currentUser]);
+  }, [currentUser, props.isOpen]);
 
   function handleNameChange(e) {
     setName(e.target.value);
@@ -43,7 +43,7 @@ export default function EditProfilePopup(props) {
           required
           type="text"
           name="name"
-          value={name}
+          value={name || ''}
           onChange={handleNameChange}
           id="name-input"
           className="popup__input popup__input_type_name"
@@ -57,7 +57,7 @@ export default function EditProfilePopup(props) {
           required
           type="text"
           name="about"
-          value={description}
+          value={description || ''}
           onChange={handleDescriptionChange}
           id="description-input"
           className="popup__input popup__input_type_description"

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
-import * as auth from "./auth";
+import * as auth from "../utils.js/auth";
 import InfoTooltip from "./InfoTooltip";
 
 function Register(props) {
@@ -29,9 +29,13 @@ function Register(props) {
           props.changeInfoTooltipstatus()
         } 
       })
+      .catch(() => {
+        props.openInfoTooltip();
+      })
       .finally(() => {
         props.openInfoTooltip();
       });
+      
   }
 
   return (

@@ -14,8 +14,7 @@ import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
 import InfoTooltip from "./InfoTooltip";
-import * as auth from "./auth";
-
+import * as auth from "../utils.js/auth";
 
 function App(props) {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
@@ -35,24 +34,23 @@ function App(props) {
 
   const [loggedIn, setLoggedIn] = React.useState(false);
 
-  const [InfoTooltipStatus, setInfoTooltipStatus] = React.useState(true);
+  const [infoTooltipStatus, setInfoTooltipStatus] = React.useState(true);
 
   const [isInfoTooltipOpen, setisInfoTooltipOpen] = React.useState(false);
 
   React.useEffect(() => {
     Promise.all([api.getUserInfoApi(), api.getInitialCards()])
       .then(([userData, cardData]) => {
-        handleTokenCheck()
         setCurrentUser(userData);
         setCards(cardData);
-               
       })
+      .then(handleTokenCheck())
+      .then((res) => setUserEmail(res.data.email))
+
       .catch((err) => {
         console.log(err);
       });
   }, []);
-
-  
 
   const [cards, setCards] = React.useState([]);
 
@@ -84,20 +82,23 @@ function App(props) {
     setLoggedIn(true);
   }
 
-  function handleTokenCheck () {
+  function handleTokenCheck() {
     if (localStorage.getItem("token")) {
       const token = localStorage.getItem("token");
-      
-      auth.checkToken(token).then((res) => {
-        if (res) {
-          setLoggedIn(true);
-          setUserEmail(res.data.email);
-          props.history.push('/');
+      auth
+        .checkToken(token)
+        .then((res) => {
+          if (res) {
+            setLoggedIn(true);
+            setUserEmail(res.data.email);
+            props.history.push("/");
           }
-      });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-  };
-
+  }
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -111,11 +112,11 @@ function App(props) {
     setIsAddPlacePopupOpen(true);
   }
 
-  function changeInfoTooltipstatus(){
+  function changeInfoTooltipstatus() {
     setInfoTooltipStatus(false);
   }
 
-  function openInfoTooltip(){
+  function openInfoTooltip() {
     setisInfoTooltipOpen(true);
   }
 
@@ -126,11 +127,11 @@ function App(props) {
     setSelectedCard({ name: "", link: "" });
     setInfoTooltipStatus(true);
     setisInfoTooltipOpen(false);
-    }
+  }
 
   React.useEffect(() => {
     function closePopupByEsc(e) {
-      if (e.keyCode === 27) {
+      if (e.key === "Escape") {
         closeAllPopups();
       }
     }
@@ -148,11 +149,11 @@ function App(props) {
       .then((data) => {
         setCurrentUser(data);
       })
-      .catch((err) => {
-        console.log(err);
-      })
       .then(() => {
         closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -162,11 +163,11 @@ function App(props) {
       .then((data) => {
         setCurrentUser(data);
       })
-      .catch((err) => {
-        console.log(err);
-      })
       .then(() => {
         closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -176,11 +177,11 @@ function App(props) {
       .then((data) => {
         setCards([data, ...cards]);
       })
-      .catch((err) => {
-        console.log(err);
-      })
       .then(() => {
         closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -191,44 +192,42 @@ function App(props) {
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+          id={2}
         />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          id={3}
         />
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlace}
+          id={4}
         />
 
         <PopupWithForm
           name="delete-card"
           title="Вы уверены?"
           onClose={closeAllPopups}
-        >
-          <button
-            type="submit"
-            className="popup__add-button popup__add-button_type_delete button"
-          >
-            Да
-          </button>
-        </PopupWithForm>
+          id={5}
+        ></PopupWithForm>
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups}></ImagePopup>
 
         <InfoTooltip
-        isOpen={isInfoTooltipOpen}
-        status={InfoTooltipStatus}
-        onClose={closeAllPopups}
-      />
-        
-        <Header email={userEmail} loggedIn={loggedIn}/>
+          isOpen={isInfoTooltipOpen}
+          status={infoTooltipStatus}
+          onClose={closeAllPopups}
+        />
+
+        <Header email={userEmail} loggedIn={loggedIn} />
         <Switch>
           <ProtectedRoute
             loggedIn={loggedIn}
-            exact path="/"
+            exact
+            path="/"
             component={Main}
             onEditProfile={handleEditProfileClick}
             onAddPlace={handleEditPlaceClick}
@@ -239,10 +238,12 @@ function App(props) {
             cards={cards}
           />
           <Route path="/signup">
-            <Register changeInfoTooltipstatus={changeInfoTooltipstatus}
-          openInfoTooltip={openInfoTooltip}/>
+            <Register
+              changeInfoTooltipstatus={changeInfoTooltipstatus}
+              openInfoTooltip={openInfoTooltip}
+            />
           </Route>
-         
+
           <Route path="/signin">
             <Login handleLogin={handleLogin} />
           </Route>
