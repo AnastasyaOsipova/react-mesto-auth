@@ -34,7 +34,7 @@ function App(props) {
 
   const [loggedIn, setLoggedIn] = React.useState(false);
 
-  const [infoTooltipStatus, setInfoTooltipStatus] = React.useState(true);
+  const [infoTooltipStatus, setInfoTooltipStatus] = React.useState(false);
 
   const [isInfoTooltipOpen, setisInfoTooltipOpen] = React.useState(false);
 
@@ -44,9 +44,8 @@ function App(props) {
         setCurrentUser(userData);
         setCards(cardData);
       })
-      .then(handleTokenCheck())
       .catch((err) => {
-        console.log(err);
+        console.log(err).then(handleTokenCheck);
       });
   }, []);
 
@@ -111,8 +110,8 @@ function App(props) {
     setIsAddPlacePopupOpen(true);
   }
 
-  function changeInfoTooltipstatus() {
-    setInfoTooltipStatus(false);
+  function changeInfoTooltipstatus(value) {
+    setInfoTooltipStatus(value);
   }
 
   function openInfoTooltip() {

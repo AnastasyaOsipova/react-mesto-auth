@@ -9,9 +9,6 @@ function Register(props) {
     password: "",
   });
 
-  
-
-  
   function handleChange(e) {
     const { name, value } = e.target;
     setValues((prevState) => ({
@@ -25,22 +22,20 @@ function Register(props) {
     auth
       .register(values.email, values.password)
       .then((res) => {
-        if (res.error) {
-          props.changeInfoTooltipstatus()
-        } 
+        if (res.data.email) {
+          props.changeInfoTooltipstatus(true);
+        }
       })
       .catch(() => {
-        props.openInfoTooltip();
+        props.changeInfoTooltipstatus(false);
       })
       .finally(() => {
         props.openInfoTooltip();
       });
-      
   }
 
   return (
     <div>
-     
       <div className="login">
         <form
           noValidate
